@@ -1,8 +1,10 @@
 #!python3
 
-from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QPushButton, QHBoxLayout, QMainWindow
+from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QPushButton, QHBoxLayout, QMainWindow, \
+    QListWidget, QFileDialog
 from PyQt6.QtGui import QIcon, QFont, QAction
 from pygame import mixer
+from pathlib import Path
 import sys
 
 
@@ -42,6 +44,8 @@ class Window(QMainWindow):
         the current track and one for getting to the next track.
         """
 
+        self.trackList = QListWidget()
+
         self.playButton = QPushButton(self.centralwidget)
         self.playButton.setObjectName("playButton")  # sets obj name
         self.playButton.setGeometry(150, 170, 70, 50)  # sets position and dimensions: x,y,width, height
@@ -68,7 +72,7 @@ class Window(QMainWindow):
         MainWindow.setCentralWidget(self.centralwidget)  # sets the window's main widget
 
     def play_pause(self):
-        pass
+        mixer.music.load("")
 
     def previous(self):
         pass
@@ -76,13 +80,22 @@ class Window(QMainWindow):
     def next(self):
         pass
 
+    def discover_Tracks(self):
+        self.folderPath = QFileDialog.getExistingDirectory(self, 'Select Tracks Folder')  # type: str
+        allFiles = list(Path.glob(Path(self.folderPath), "*"))
+        for i in range(len(allFiles)):
+            if allFiles[i].suffix == ".mp3" or allFiles[i].suffix == ".wav":
+                print(allFiles[i])
+            else:
+                allFiles.pop(i)
+        print(self.folderPath, f"\n {allFiles}")
+
 
 if __name__ == "__main__":
     mixer.init()
     app = QApplication(sys.argv)
     window = Window()
     window.create_ui(window)
+    window.discover_Tracks()
     window.show()
     sys.exit(app.exec())
-    pygame.mixer.music.load("example.mp3")
-    pygame.mixer.music.play()
