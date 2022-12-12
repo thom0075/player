@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QPushBut
 from PyQt6.QtGui import QIcon, QFont, QAction
 from pygame import mixer
 from pathlib import Path
+import glob
 import sys
 
 
@@ -34,7 +35,8 @@ class Window(QMainWindow):
         self.close()
 
     def create_ui(self, MainWindow):
-        buttons_h_layout = QHBoxLayout()  # create the h. layout for the buttons
+        self.main_v_layout = QVBoxLayout()
+        self.buttons_h_layout = QHBoxLayout()  # create the h. layout for the buttons
         self.centralwidget = QWidget(MainWindow)  # creates the central widget and sets the parent to MainWindow
         self.centralwidget.setObjectName("centralwidget")
 
@@ -44,7 +46,8 @@ class Window(QMainWindow):
         the current track and one for getting to the next track.
         """
 
-        self.trackList = QListWidget()
+        self.trackList = QListWidget(self.centralwidget)
+        self.trackList.setGeometry(25, 250, 500, 70)
 
         self.playButton = QPushButton(self.centralwidget)
         self.playButton.setObjectName("playButton")  # sets obj name
@@ -65,14 +68,18 @@ class Window(QMainWindow):
         self.backButton.clicked.connect(self.previous)
         self.forwardButton.clicked.connect(self.next)
 
-        buttons_h_layout.addWidget(self.backButton)
-        buttons_h_layout.addWidget(self.playButton)
-        buttons_h_layout.addWidget(self.forwardButton)
+        self.buttons_h_layout.addWidget(self.backButton)
+        self.buttons_h_layout.addWidget(self.playButton)
+        self.buttons_h_layout.addWidget(self.forwardButton)
 
         MainWindow.setCentralWidget(self.centralwidget)  # sets the window's main widget
 
+        self.main_v_layout.addLayout(self.buttons_h_layout)
+        self.main_v_layout.addWidget(self.trackList)
+
     def play_pause(self):
-        mixer.music.load("")
+        pass
+        # mixer.music.load("")
 
     def previous(self):
         pass
@@ -82,13 +89,33 @@ class Window(QMainWindow):
 
     def discover_Tracks(self):
         self.folderPath = QFileDialog.getExistingDirectory(self, 'Select Tracks Folder')  # type: str
-        allFiles = list(Path.glob(Path(self.folderPath), "*"))
-        for i in range(len(allFiles)):
+        # print(self.folderPath)
+        try:
+            self.allFiles = glob.glob(f"{self.folderPath}/*.mp3", recursive=False)
+            for i in range(len(self.allFiles)):
+                print(self.allFiles[i])
+        except Exception as E:
+            with open("report.txt", "w") as f:
+                f.write(str(E))
+
+        """ #OLD
+        list(Path.glob(Path(self.folderPath), "*", recursive=False))
+                for i in range(len(allFiles)):
             if allFiles[i].suffix == ".mp3" or allFiles[i].suffix == ".wav":
                 print(allFiles[i])
             else:
-                allFiles.pop(i)
-        print(self.folderPath, f"\n {allFiles}")
+                pass
+                # allFiles.pop(i)
+        """
+        # print(self.folderPath, f"\n {allFiles}")
+
+    def add_to_list(self, tracks):
+        try:
+            for i in range(len(tracks)):
+                self.trackList.insertItem(0, Path(tracks[i]).name)
+        except Exception as E:
+            with open("report.txt", "w") as f:
+                f.write(str(E))
 
 
 if __name__ == "__main__":
@@ -96,6 +123,9 @@ if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = Window()
     window.create_ui(window)
+
     window.discover_Tracks()
+    window.add_to_list(window.allFiles)
+
     window.show()
     sys.exit(app.exec())
