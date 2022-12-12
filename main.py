@@ -84,6 +84,7 @@ class Window(QMainWindow):
     def play_pause(self, track):
         mixer.music.load(track)
         mixer.music.play()
+        pass
 
     def previous(self):
         pass
