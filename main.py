@@ -55,6 +55,7 @@ class Window(QMainWindow):
 
         self.playButton = QPushButton(self.centralwidget)
         self.playButton.setObjectName("playButton")  # sets obj name
+        self.playButton.setCheckable(True)
         self.playButton.setGeometry(240, 170, 70, 50)  # sets position and dimensions: x,y,width, height
         self.playButton.setText("Play")  # sets the button's text
 
@@ -81,27 +82,58 @@ class Window(QMainWindow):
         self.main_v_layout.addLayout(self.buttons_h_layout)
         self.main_v_layout.addWidget(self.trackList)
 
-    def play_pause(self, track):
-        mixer.music.load(track)
-        mixer.music.play()
-        pass
+    def play_pause(self):
+        if self.playButton.isChecked():
+            self.playButton.setText("Play")
+            mixer.music.pause()
+        else:
+            self.playButton.setText("Pause")
+            mixer.music.unpause()
 
     def previous(self):
-        pass
+        self.playingPrev = False
+        tracks = []
+        # tracks = [self.trackList.item(x).text() for x in range(self.trackList.count()-1)]
+        for key in self.tracksD.keys():
+            tracks.append(key)
+            print(f"[DICT KEY] {key}")
+        try:
+            print(tracks)
+            previous = tracks.index(self.trackList.currentItem().text()) - 1
+            previousPath = self.tracksD[str(tracks[previous])]  ###
+            print(previousPath)
+            self.playingPrev = True
+            if str(tracks.index(Path(previousPath).name)) == tracks[previous]:
+                previous -= 1
+                # previousPath = self.tracksD[str(tracks[previous])]
+                # mixer.music.load(previousPath)
+                # mixer.music.play()
+            else:
+                mixer.music.load(previousPath)
+                mixer.music.play()
+            self.playButton.setText("Pause")
+
+
+        except Exception as E:
+            with open("report.txt", "w") as f:
+                f.write("Line 109 " + str(E))
 
     def next(self):
         pass
 
     def track_selected(self):
         try:
-            track = self.trackList.currentItem()
-            track = track.text()
+            track = self.trackList.currentItem().text()
+            # track = track.text()
             self.setWindowTitle(f"Audio player - Playing: {track}")
-            self.play_pause(self.tracksD[f"{track}"])
+            mixer.music.load(self.tracksD[f"{track}"])
+            mixer.music.play()
+            self.playButton.setText("Pause")
+            # self.play_pause(self.tracksD[f"{track}"])
             print(self.tracksD[f"{track}"])
         except Exception as E:
             with open("report.txt", "w") as f:
-                f.write("Line 105 "+str(E))
+                f.write("Line 105 " + str(E))
 
     def discover_Tracks(self):
         self.folderPath = QFileDialog.getExistingDirectory(self, 'Select Tracks Folder')  # type: str
