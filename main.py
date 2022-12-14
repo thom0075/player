@@ -8,6 +8,7 @@ from pathlib import Path
 import glob
 import os
 import sys
+import DLL
 
 
 class Window(QMainWindow):
@@ -95,12 +96,12 @@ class Window(QMainWindow):
         tracks = []
         # tracks = [self.trackList.item(x).text() for x in range(self.trackList.count()-1)]
         for key in self.tracksD.keys():
-            tracks.append(key)
+            tracks.append(key)  #LL
             print(f"[DICT KEY] {key}")
         try:
-            print(tracks)
-            previous = tracks.index(self.trackList.currentItem().text()) - 1
-            previousPath = self.tracksD[str(tracks[previous])]  ###
+            print(tracks)   #LL
+            previous = tracks.index(self.trackList.currentItem().text()) - 1    #LL load the previous element
+            previousPath = self.tracksD[str(tracks[previous])]  ###             #LL load the element
             print(previousPath)
             self.playingPrev = True
             if str(tracks.index(Path(previousPath).name)) == tracks[previous]:
