@@ -92,46 +92,53 @@ class Window(QMainWindow):
             mixer.music.unpause()
 
     def previous(self):
-        self.playingPrev = False
-        tracks = []
+        tracks = DLL.DLL()  # creates a doubly linked list
+
         # tracks = [self.trackList.item(x).text() for x in range(self.trackList.count()-1)]
         for key in self.tracksD.keys():
-            tracks.append(key)  #LL
+            if key == self.track:
+                node = tracks.InsertToEnd(key)  # DLL
+                self.playingNode = tracks.TraverseDLL(True, False, False)
+            tracks.InsertToEnd(key)  # DLL
             print(f"[DICT KEY] {key}")
-        try:
-            print(tracks)   #LL
-            previous = tracks.index(self.trackList.currentItem().text()) - 1    #LL load the previous element
-            previousPath = self.tracksD[str(tracks[previous])]  ###             #LL load the element
-            print(previousPath)
-            self.playingPrev = True
-            if str(tracks.index(Path(previousPath).name)) == tracks[previous]:
-                previous -= 1
-                # previousPath = self.tracksD[str(tracks[previous])]
-                # mixer.music.load(previousPath)
-                # mixer.music.play()
-            else:
-                mixer.music.load(previousPath)
-                mixer.music.play()
-            self.playButton.setText("Pause")
 
+        previousPath = self.tracksD[str(tracks[self.playingNode.prev.data])]
 
-        except Exception as E:
-            with open("report.txt", "w") as f:
-                f.write("Line 109 " + str(E))
+        # try:
+        #     print(tracks)  # DLL
+        #     previous = tracks.index(self.trackList.currentItem().text()) - 1  # LL load the previous element
+        #     previousPath = self.tracksD[str(tracks[previous])]  ###             #LL load the element
+        #     print(previousPath)
+        #     self.playingPrev = True
+        #     if str(tracks.index(Path(previousPath).name)) == tracks[previous]:
+        #         previous -= 1
+        #         # previousPath = self.tracksD[str(tracks[previous])]
+        #         # mixer.music.load(previousPath)
+        #         # mixer.music.play()
+        #     else:
+        mixer.music.load(previousPath)
+        mixer.music.play()
+
+    #self.playButton.setText("Pause")
+
+    # except Exception as E:
+    #     with open("report.txt", "w") as f:
+    #         f.write("Line 109 " + str(E))
+
 
     def next(self):
         pass
 
     def track_selected(self):
         try:
-            track = self.trackList.currentItem().text()
+            self.track = self.trackList.currentItem().text()
             # track = track.text()
-            self.setWindowTitle(f"Audio player - Playing: {track}")
-            mixer.music.load(self.tracksD[f"{track}"])
+            self.setWindowTitle(f"Audio player - Playing: {self.track}")
+            mixer.music.load(self.tracksD[f"{self.track}"])
             mixer.music.play()
             self.playButton.setText("Pause")
             # self.play_pause(self.tracksD[f"{track}"])
-            print(self.tracksD[f"{track}"])
+            print(self.tracksD[f"{self.track}"])
         except Exception as E:
             with open("report.txt", "w") as f:
                 f.write("Line 105 " + str(E))
@@ -157,6 +164,7 @@ class Window(QMainWindow):
                 # allFiles.pop(i)
         """
         # print(self.folderPath, f"\n {allFiles}")
+
 
     def add_to_list(self, tracks):
         try:

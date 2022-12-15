@@ -5,6 +5,7 @@ class Node:
         self.data = data
         self.next = None
         self.prev = None
+        self.playing = False
 
 
 """
@@ -35,12 +36,17 @@ class DLL:
         if self.head is None:
             newNode = Node(data)
             self.head = newNode
+            self.tail = newNode
+            newNode.prev = self.tail
+            newNode.next = self.head
             return
         newNode = Node(data)
         self.tail.next = newNode
         newNode.prev = self.tail
         self.tail = self.tail.next
         self.tail.next = self.head
+        self.head.prev = self.tail
+        print("")
 
     def DeleteFromHead(self):
         if self.head is None:
@@ -59,7 +65,7 @@ class DLL:
         self.tail.prev.next = self.head
         self.tail = self.tail.prev  # overwrites tail node with its previous one
 
-    def TraverseDLL(self):
+    def TraverseDLL(self, FindPlaying=False, SetPlaying=False, RPlaying=False):
         if self.head is None:
             print("List empty, nothing to traverse")
             return
@@ -71,6 +77,15 @@ class DLL:
             print(n.data, end="\n")
             if n is self.tail:
                 break
+            if FindPlaying:
+                if n.playing:
+                    return n
+            if SetPlaying:
+                n.playing = True
+                return
+            if RPlaying:
+                n.playing = False
+                return
             n = n.next
         return
 
