@@ -97,13 +97,15 @@ class Window(QMainWindow):
         # tracks = [self.trackList.item(x).text() for x in range(self.trackList.count()-1)]
         for key in self.tracksD.keys():
             if key == self.track:
-                node = tracks.InsertToEnd(key)  # DLL
-                self.playingNode = tracks.TraverseDLL(True, False, False)
+                tracks.InsertToEnd(key)  # DLL
+                playingNode = tracks.TraverseDLL(True, False, False)
+                continue
             tracks.InsertToEnd(key)  # DLL
             print(f"[DICT KEY] {key}")
 
-        previousPath = self.tracksD[str(tracks[self.playingNode.prev.data])]
-
+        tName = str(tracks.TraverseDLL(True, False, True))
+        previousPath = self.tracksD[tName]
+        tracks.TraverseDLL(True, False, True)
         # try:
         #     print(tracks)  # DLL
         #     previous = tracks.index(self.trackList.currentItem().text()) - 1  # LL load the previous element
@@ -119,15 +121,28 @@ class Window(QMainWindow):
         mixer.music.load(previousPath)
         mixer.music.play()
 
-    #self.playButton.setText("Pause")
+    # self.playButton.setText("Pause")
 
     # except Exception as E:
     #     with open("report.txt", "w") as f:
     #         f.write("Line 109 " + str(E))
 
-
     def next(self):
-        pass
+        tracks = DLL.DLL()  # creates a doubly linked list
+
+        # tracks = [self.trackList.item(x).text() for x in range(self.trackList.count()-1)]
+        for key in self.tracksD.keys():
+            if key == self.track:
+                node = tracks.InsertToEnd(key)  # DLL
+                playingNode = tracks.TraverseDLL(False, True, False)
+            tracks.InsertToEnd(key)  # DLL
+            print(f"[DICT KEY] {key}")
+
+        tName = str(tracks.TraverseDLL(True, False, False).next.data)
+        nextPath = self.tracksD[tName]
+        tracks.TraverseDLL(True, False, True, True)
+        mixer.music.load(nextPath)
+        mixer.music.play()
 
     def track_selected(self):
         try:
@@ -164,7 +179,6 @@ class Window(QMainWindow):
                 # allFiles.pop(i)
         """
         # print(self.folderPath, f"\n {allFiles}")
-
 
     def add_to_list(self, tracks):
         try:

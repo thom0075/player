@@ -65,18 +65,24 @@ class DLL:
         self.tail.prev.next = self.head
         self.tail = self.tail.prev  # overwrites tail node with its previous one
 
-    def TraverseDLL(self, FindPlaying=False, SetPlaying=False, RPlaying=False):
+    def TraverseDLL(self, FindPlaying=False, SetPlaying=False, RPlaying=False, NextN=False):
         if self.head is None:
             print("List empty, nothing to traverse")
             return
-        if self.head.next is None:
+        if self.head.next is None:  # not useful in a DLL
             print(self.head.data)
             return
         n = self.head
         while True:
             print(n.data, end="\n")
-            if n is self.tail:
-                break
+            if FindPlaying and RPlaying:
+                if n.playing:
+                    n.playing = False
+                    if NextN:
+                        n.next.playing = True
+                        # return n.next
+                    n.prev.playing = True
+                    # return n.next
             if FindPlaying:
                 if n.playing:
                     return n
@@ -86,6 +92,8 @@ class DLL:
             if RPlaying:
                 n.playing = False
                 return
+            if n is self.tail:
+                break
             n = n.next
         return
 
