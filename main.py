@@ -14,7 +14,7 @@ import DLL
 class Window(QMainWindow):
     def __init__(self):
         super().__init__()  # calls parent class' constructor
-        self.setWindowTitle(f"Audio player - Playing ")  # TODO set variable current_track {current_track}
+        self.setWindowTitle(f"Audio player - Playing: ")  # TODO set variable current_track {current_track}
         self.setWindowIcon(QIcon("qt.png"))
 
         self.setGeometry(500, 300, 550, 400)
@@ -98,14 +98,15 @@ class Window(QMainWindow):
         for key in self.tracksD.keys():
             if key == self.track:
                 tracks.InsertToEnd(key)  # DLL
-                playingNode = tracks.TraverseDLL(True, False, False)
+                tracks.TraverseDLL(True, False, self.track)
                 continue
             tracks.InsertToEnd(key)  # DLL
             print(f"[DICT KEY] {key}")
 
-        tName = str(tracks.TraverseDLL(True, False, True))
+        tName = str(tracks.changeTrack(True, True, False, self.track).data)
+        self.track = tName
         previousPath = self.tracksD[tName]
-        tracks.TraverseDLL(True, False, True)
+        # tracks.TraverseDLL(True, False, True)
         # try:
         #     print(tracks)  # DLL
         #     previous = tracks.index(self.trackList.currentItem().text()) - 1  # LL load the previous element
@@ -120,6 +121,7 @@ class Window(QMainWindow):
         #     else:
         mixer.music.load(previousPath)
         mixer.music.play()
+        self.setWindowTitle(f"Audio player - Playing: {self.track}")
 
     # self.playButton.setText("Pause")
 
@@ -133,16 +135,19 @@ class Window(QMainWindow):
         # tracks = [self.trackList.item(x).text() for x in range(self.trackList.count()-1)]
         for key in self.tracksD.keys():
             if key == self.track:
-                node = tracks.InsertToEnd(key)  # DLL
-                playingNode = tracks.TraverseDLL(False, True, False)
+                tracks.InsertToEnd(key)  # DLL
+                tracks.TraverseDLL(True, False, self.track)
+                continue
             tracks.InsertToEnd(key)  # DLL
             print(f"[DICT KEY] {key}")
 
-        tName = str(tracks.TraverseDLL(True, False, False).next.data)
-        nextPath = self.tracksD[tName]
-        tracks.TraverseDLL(True, False, True, True)
-        mixer.music.load(nextPath)
+        tName = str(tracks.changeTrack(True, True, True, self.track).data)
+        self.track = tName
+        previousPath = self.tracksD[tName]
+
+        mixer.music.load(previousPath)
         mixer.music.play()
+        self.setWindowTitle(f"Audio player - Playing: {self.track}")
 
     def track_selected(self):
         try:
