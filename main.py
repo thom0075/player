@@ -200,8 +200,9 @@ class Window(QMainWindow):
             with open("report.txt", "w") as f:
                 f.write(str(E))
 
-
-stylesheet = r"""
+#TODO add a background image for the main app window
+#the image should be fetched from the backgrounds api
+stylesheet = r"""           
     MainWindow {
         background-image: url("C:\Users\thoma\Downloads\tree-736885_960_720.jpg"); 
         background-repeat: no-repeat; 
