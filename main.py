@@ -28,9 +28,11 @@ class Window(QMainWindow):
 
         importTracks = QAction("Import tracks", self)  # TODO add icon(s) here
         importTracks.setShortcut("Ctrl+N")
+        importTracks.triggered.connect(self.discover_Tracks)
 
         exitAction = QAction("Exit", self)
         exitAction.setShortcut("Alt+F4")
+        exitAction.triggered.connect(self.close_window)
 
         fileMenu.addAction(importTracks)
         fileMenu.addAction(exitAction)
@@ -184,6 +186,7 @@ class Window(QMainWindow):
                 # allFiles.pop(i)
         """
         # print(self.folderPath, f"\n {allFiles}")
+        self.add_to_list(self.allFiles)
 
     def add_to_list(self, tracks):
         try:
@@ -198,14 +201,23 @@ class Window(QMainWindow):
                 f.write(str(E))
 
 
+stylesheet = r"""
+    MainWindow {
+        background-image: url("C:\Users\thoma\Downloads\tree-736885_960_720.jpg"); 
+        background-repeat: no-repeat; 
+        background-position: center;
+    }
+    """
+
 if __name__ == "__main__":
     # mixer.init()
     app = QApplication(sys.argv)
     window = Window()
+    window.setStyleSheet(u"background-image:url('./qt.png')")
     window.create_ui(window)
 
     window.discover_Tracks()
-    window.add_to_list(window.allFiles)
+    # window.add_to_list(window.allFiles)    #moved it to discover_Tracks to enable the import tracks button
 
     window.show()
     sys.exit(app.exec())
