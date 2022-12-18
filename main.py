@@ -5,6 +5,7 @@ from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QPushBut
 from PyQt6.QtGui import QIcon, QFont, QAction
 from pygame import mixer
 from pathlib import Path
+from stylesheets import *
 import glob
 import os
 import sys
@@ -52,25 +53,54 @@ class Window(QMainWindow):
         the current track and one for getting to the next track.
         """
 
+        buttonStyle = """
+        QPushButton {
+         display: inline-block;
+         text-align: center;
+         color: #FFFFFF;
+         line-height: 1.2;
+         font-weight: normal;
+         font-family: sans-serif;
+         font-size: 18px;
+         background-color: rgb(217,236,240,0.7);
+         border-radius: 20px;
+         padding: 10px 20px;
+         border: 2px solid white;
+        QPushButton:hover {
+         cursor: pointer;
+        }
+         border-color: #707078;
+        }
+        """
+
         self.trackList = QListWidget(self.centralwidget)
         self.trackList.setGeometry(25, 250, 500, 70)
+        self.trackList.setStyleSheet(u"background-image:url('./listback.png')")
         self.trackList.clicked.connect(self.track_selected)
 
         self.playButton = QPushButton(self.centralwidget)
         self.playButton.setObjectName("playButton")  # sets obj name
         self.playButton.setCheckable(True)
         self.playButton.setGeometry(240, 170, 70, 50)  # sets position and dimensions: x,y,width, height
-        self.playButton.setText("Play")  # sets the button's text
+        #self.playButton.setText("Play")  # sets the button's text
 
         self.backButton = QPushButton(self.centralwidget)
         self.backButton.setObjectName("backButton")
         self.backButton.setGeometry(150, 170, 70, 50)
-        self.backButton.setText("Previous")
+        #self.backButton.setText("Previous")
 
         self.forwardButton = QPushButton(self.centralwidget)
         self.forwardButton.setObjectName("backButton")
         self.forwardButton.setGeometry(330, 170, 70, 50)
-        self.forwardButton.setText("Next")
+        #self.forwardButton.setText("Next")
+
+        self.playButton.setStyleSheet(playbuttonStyle)
+        self.backButton.setStyleSheet(backbuttonstyle)
+        self.forwardButton.setStyleSheet(nextbuttonstyle)
+
+        self.playButton.setIcon(QIcon("./icons/play.png"))
+        self.backButton.setIcon(QIcon("./icons/rewind.png"))
+        self.forwardButton.setIcon(QIcon("./icons/forward.png"))
 
         self.playButton.clicked.connect(self.play_pause)
         self.backButton.clicked.connect(self.previous)
@@ -84,13 +114,16 @@ class Window(QMainWindow):
 
         self.main_v_layout.addLayout(self.buttons_h_layout)
         self.main_v_layout.addWidget(self.trackList)
+        self.centralwidget.setStyleSheet(u"background-image:url('./wallpaper.jpg')")
 
     def play_pause(self):
         if self.playButton.isChecked():
-            self.playButton.setText("Play")
+            #self.playButton.setText("Play")
+            self.playButton.setIcon(QIcon("./icons/play.png"))
             mixer.music.pause()
         else:
-            self.playButton.setText("Pause")
+            #self.playButton.setText("Pause")
+            self.playButton.setIcon(QIcon("./icons/pause.png"))
             mixer.music.unpause()
 
     def previous(self):
@@ -158,7 +191,8 @@ class Window(QMainWindow):
             self.setWindowTitle(f"Audio player - Playing: {self.track}")
             mixer.music.load(self.tracksD[f"{self.track}"])
             mixer.music.play()
-            self.playButton.setText("Pause")
+            #self.playButton.setText("Pause")
+            self.playButton.setIcon(QIcon("./icons/pause.png"))
             # self.play_pause(self.tracksD[f"{track}"])
             print(self.tracksD[f"{self.track}"])
         except Exception as E:
@@ -213,7 +247,6 @@ if __name__ == "__main__":
     # mixer.init()
     app = QApplication(sys.argv)
     window = Window()
-    window.setStyleSheet(u"background-image:url('./qt.png')")
     window.create_ui(window)
 
     window.discover_Tracks()
