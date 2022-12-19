@@ -51,6 +51,7 @@ class Window(QMainWindow):
         This part of the code is dedicated to creating the buttons for playing media.
         Three buttons are defined: one for returning to the previous track, one for playing/pausing
         the current track and one for getting to the next track.
+        All the widgets in the main window must inherit from centralwidget.
         """
 
         buttonStyle = """
