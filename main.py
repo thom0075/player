@@ -54,26 +54,6 @@ class Window(QMainWindow):
         All the widgets in the main window must inherit from centralwidget.
         """
 
-        buttonStyle = """
-        QPushButton {
-         display: inline-block;
-         text-align: center;
-         color: #FFFFFF;
-         line-height: 1.2;
-         font-weight: normal;
-         font-family: sans-serif;
-         font-size: 18px;
-         background-color: rgb(217,236,240,0.7);
-         border-radius: 20px;
-         padding: 10px 20px;
-         border: 2px solid white;
-        QPushButton:hover {
-         cursor: pointer;
-        }
-         border-color: #707078;
-        }
-        """
-
         self.trackList = QListWidget(self.centralwidget)
         self.trackList.setGeometry(25, 250, 500, 70)
         self.trackList.setStyleSheet(u"background-image:url('./listback.png')")
@@ -83,17 +63,14 @@ class Window(QMainWindow):
         self.playButton.setObjectName("playButton")  # sets obj name
         self.playButton.setCheckable(True)
         self.playButton.setGeometry(240, 170, 70, 50)  # sets position and dimensions: x,y,width, height
-        #self.playButton.setText("Play")  # sets the button's text
 
         self.backButton = QPushButton(self.centralwidget)
         self.backButton.setObjectName("backButton")
         self.backButton.setGeometry(150, 170, 70, 50)
-        #self.backButton.setText("Previous")
 
         self.forwardButton = QPushButton(self.centralwidget)
         self.forwardButton.setObjectName("backButton")
         self.forwardButton.setGeometry(330, 170, 70, 50)
-        #self.forwardButton.setText("Next")
 
         self.playButton.setStyleSheet(playbuttonStyle)
         self.backButton.setStyleSheet(backbuttonstyle)
@@ -119,18 +96,15 @@ class Window(QMainWindow):
 
     def play_pause(self):
         if self.playButton.isChecked():
-            #self.playButton.setText("Play")
             self.playButton.setIcon(QIcon("./icons/play.png"))
             mixer.music.pause()
         else:
-            #self.playButton.setText("Pause")
             self.playButton.setIcon(QIcon("./icons/pause.png"))
             mixer.music.unpause()
 
     def previous(self):
         tracks = DLL.DLL()  # creates a doubly linked list
 
-        # tracks = [self.trackList.item(x).text() for x in range(self.trackList.count()-1)]
         for key in self.tracksD.keys():
             if key == self.track:
                 tracks.InsertToEnd(key)  # DLL
@@ -142,33 +116,12 @@ class Window(QMainWindow):
         tName = str(tracks.changeTrack(True, True, False, self.track).data)
         self.track = tName
         previousPath = self.tracksD[tName]
-        # tracks.TraverseDLL(True, False, True)
-        # try:
-        #     print(tracks)  # DLL
-        #     previous = tracks.index(self.trackList.currentItem().text()) - 1  # LL load the previous element
-        #     previousPath = self.tracksD[str(tracks[previous])]  ###             #LL load the element
-        #     print(previousPath)
-        #     self.playingPrev = True
-        #     if str(tracks.index(Path(previousPath).name)) == tracks[previous]:
-        #         previous -= 1
-        #         # previousPath = self.tracksD[str(tracks[previous])]
-        #         # mixer.music.load(previousPath)
-        #         # mixer.music.play()
-        #     else:
         mixer.music.load(previousPath)
         mixer.music.play()
         self.setWindowTitle(f"Audio player - Playing: {self.track}")
-
-    # self.playButton.setText("Pause")
-
-    # except Exception as E:
-    #     with open("report.txt", "w") as f:
-    #         f.write("Line 109 " + str(E))
-
     def next(self):
         tracks = DLL.DLL()  # creates a doubly linked list
 
-        # tracks = [self.trackList.item(x).text() for x in range(self.trackList.count()-1)]
         for key in self.tracksD.keys():
             if key == self.track:
                 tracks.InsertToEnd(key)  # DLL
@@ -198,7 +151,7 @@ class Window(QMainWindow):
             print(self.tracksD[f"{self.track}"])
         except Exception as E:
             with open("report.txt", "w") as f:
-                f.write("Line 105 " + str(E))
+                f.write("Line 154 " + str(E))
 
     def discover_Tracks(self):
         self.folderPath = QFileDialog.getExistingDirectory(self, 'Select Tracks Folder')  # type: str
@@ -210,16 +163,6 @@ class Window(QMainWindow):
         except Exception as E:
             with open("report.txt", "w") as f:
                 f.write(str(E))
-
-        """ #OLD
-        list(Path.glob(Path(self.folderPath), "*", recursive=False))
-                for i in range(len(allFiles)):
-            if allFiles[i].suffix == ".mp3" or allFiles[i].suffix == ".wav":
-                print(allFiles[i])
-            else:
-                pass
-                # allFiles.pop(i)
-        """
         # print(self.folderPath, f"\n {allFiles}")
         self.add_to_list(self.allFiles)
 
@@ -235,16 +178,6 @@ class Window(QMainWindow):
             with open("report.txt", "w") as f:
                 f.write(str(E))
 
-#TODO add a background image for the main app window
-#the image should be fetched from the backgrounds api
-stylesheet = r"""           
-    MainWindow {
-        background-image: url("C:\Users\thoma\Downloads\tree-736885_960_720.jpg"); 
-        background-repeat: no-repeat; 
-        background-position: center;
-    }
-    """
-
 if __name__ == "__main__":
     # mixer.init()
     app = QApplication(sys.argv)
@@ -252,7 +185,5 @@ if __name__ == "__main__":
     window.create_ui(window)
 
     window.discover_Tracks()
-    # window.add_to_list(window.allFiles)    #moved it to discover_Tracks to enable the import tracks button
-
     window.show()
     sys.exit(app.exec())
