@@ -102,11 +102,6 @@ class DLL:
             n = n.next
         return
 
-    # def push(self, data):
-    #     newNode = Node(data)
-    #     newNode.next = self.head
-    #     if self.head is not None:
-
 
 if __name__ == "__main__":
     listD = DLL()

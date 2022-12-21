@@ -20,6 +20,7 @@ class Window(QMainWindow):
 
         self.setGeometry(500, 300, 550, 400)
         self.create_menu()  # calls this method to create the top menu
+        self.track = None
 
         mixer.init()
 
@@ -103,6 +104,8 @@ class Window(QMainWindow):
             mixer.music.unpause()
 
     def previous(self):
+        if self.track is None:
+            return
         tracks = DLL.DLL()  # creates a doubly linked list
 
         for key in self.tracksD.keys():
@@ -119,7 +122,10 @@ class Window(QMainWindow):
         mixer.music.load(previousPath)
         mixer.music.play()
         self.setWindowTitle(f"Audio player - Playing: {self.track}")
+
     def next(self):
+        if self.track is None:
+            return
         tracks = DLL.DLL()  # creates a doubly linked list
 
         for key in self.tracksD.keys():
@@ -141,13 +147,10 @@ class Window(QMainWindow):
     def track_selected(self):
         try:
             self.track = self.trackList.currentItem().text()
-            # track = track.text()
             self.setWindowTitle(f"Audio player - Playing: {self.track}")
             mixer.music.load(self.tracksD[f"{self.track}"])
             mixer.music.play()
-            #self.playButton.setText("Pause")
             self.playButton.setIcon(QIcon("./icons/pause.png"))
-            # self.play_pause(self.tracksD[f"{track}"])
             print(self.tracksD[f"{self.track}"])
         except Exception as E:
             with open("report.txt", "w") as f:
@@ -163,7 +166,6 @@ class Window(QMainWindow):
         except Exception as E:
             with open("report.txt", "w") as f:
                 f.write(str(E))
-        # print(self.folderPath, f"\n {allFiles}")
         self.add_to_list(self.allFiles)
 
     def add_to_list(self, tracks):
@@ -177,6 +179,7 @@ class Window(QMainWindow):
         except Exception as E:
             with open("report.txt", "w") as f:
                 f.write(str(E))
+
 
 if __name__ == "__main__":
     # mixer.init()
