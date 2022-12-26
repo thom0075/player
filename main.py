@@ -1,4 +1,5 @@
 #!python3
+#Author: thom075
 
 from PyQt6.QtWidgets import QApplication, QWidget, QLabel, QVBoxLayout, QPushButton, QHBoxLayout, QMainWindow, \
     QListWidget, QFileDialog
